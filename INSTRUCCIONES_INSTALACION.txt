@@ -1,0 +1,39 @@
+HONG KONG — SISTEMA COMPLETO
+============================
+
+Este paquete conserva la arquitectura Laravel del sistema y sus módulos reales de restaurante; no conserva nombres de farmacia.
+
+INSTALACIÓN EN WINDOWS / LARAGON
+1. Instala PHP 8.3+, Composer y Laragon.
+2. Inicia MySQL desde Laragon.
+3. Abre PowerShell en la carpeta sistema_hong_kong.
+4. Ejecuta, una línea a la vez:
+   composer install
+   copy .env.example .env
+   php artisan key:generate
+   mysql -u root -e "CREATE DATABASE IF NOT EXISTS hong_kong CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+   php artisan migrate --seed
+   php artisan serve
+5. Abre http://127.0.0.1:8000
+
+Si PowerShell indica que php no se reconoce, PHP no está en PATH. Usa la terminal de Laragon o agrega la carpeta que contiene php.exe al PATH y abre una terminal nueva.
+
+CREAR LA PRIMERA CUENTA DE ADMINISTRADOR
+El sistema NO trae usuarios ni contraseñas de demostración. Después de "php artisan migrate --seed", ejecuta:
+   php artisan hongkong:crear-admin
+y escribe la contraseña cuando te la pida (mínimo 8 caracteres, con letras y números). Con --email=tucorreo@dominio.com
+podrás recuperar la contraseña por correo. Luego entra a http://127.0.0.1:8000, elige "Administrador" y crea desde
+Configuración > Usuarios y roles las cuentas de Mesero, Cocina y Caja.
+
+Si olvidas la contraseña del administrador:  php artisan hongkong:cambiar-password administrador
+
+Pruebas automáticas (opcional):  php artisan test
+
+Actualizar una base de datos que ya tenías (sin borrar datos): php artisan migrate
+   (añade la fecha de cancelación de los pedidos y la baja de usuarios con historial).
+   Si tu base aún tiene las cuentas de demostración (administrador/mesero/cocina/caja con claves Admin123, Mesero123...):
+   1) cambia la contraseña del administrador:  php artisan hongkong:cambiar-password administrador
+   2) entra como administrador y elimina (o cambia la contraseña de) mesero, cocina y caja desde Usuarios y roles.
+   Hazlo ANTES de usar el sistema: esas claves son públicas.
+
+No ejecutar migrate:fresh en una base con datos que quieras conservar: ese comando elimina tablas y datos.
